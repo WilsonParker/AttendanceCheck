@@ -1,0 +1,3 @@
+[submodule "app/Library/LaravelSupports"]
+	path = app/Library/LaravelSupports
+	url = /Users/architecture/Development/WorkSpace/Laravel/Project/LaravelSupports
