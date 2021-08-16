@@ -13,7 +13,7 @@ interface LogInContract
 
     public function onLogInBefore();
 
-    public function logIn();
+    public function logIn() : ResponseInterface;
 
     public function onLogInAfter(ResponseInterface $response);
 

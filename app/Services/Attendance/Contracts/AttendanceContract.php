@@ -11,7 +11,7 @@ interface AttendanceContract
 
     public function getAttendanceParams(): array;
 
-    public function attend();
+    public function attend(): ResponseInterface;
 
     public function onAttendAfter(ResponseInterface $response);
 

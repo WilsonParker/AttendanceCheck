@@ -24,10 +24,11 @@ class AttendService extends AbstractAttendance
         // dd($response->getBody()->getContents());
     }
 
-    public function event()
+    public function event($callback = null)
     {
-        $this->logIn();
+        $this->runCallback($callback, $this->logIn());
     }
+
 
     public function onAttendAfter(ResponseInterface $response)
     {

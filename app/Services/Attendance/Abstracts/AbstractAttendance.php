@@ -6,7 +6,6 @@ use App\Services\Attendance\Contracts\AttendanceContract;
 use App\Services\Attendance\Contracts\LogInContract;
 use App\Services\Attendance\Contracts\LogOutContract;
 use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
 use Psr\Http\Message\ResponseInterface;
 
 abstract class AbstractAttendance implements LogInContract, LogOutContract, AttendanceContract
@@ -37,12 +36,18 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     }
 
     /**
+     *
+     * @param null $callback
+     * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @author  WilsonParker
+     * @added   2021/08/15
+     * @updated 2021/08/15
      */
-    public function event()
+    public function event($callback = null)
     {
         $this->login();
-        $this->attend();
+        $this->runCallback($callback, $this->attend());
     }
 
     public function onLogInBefore()
@@ -50,9 +55,14 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     }
 
     /**
+     *
+     * @return \Psr\Http\Message\ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @author  WilsonParker
+     * @added   2021/08/15
+     * @updated 2021/08/15
      */
-    public function logIn()
+    public function logIn(): ResponseInterface
     {
         $this->onLogInBefore();
 
@@ -62,6 +72,7 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
 
         $this->setSession($response);
         $this->onLogInAfter($response);
+        return $response;
     }
 
     public function onLogInAfter(ResponseInterface $response)
@@ -70,9 +81,18 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
 
     public function getAttendanceParams(): array
     {
+        return [];
     }
 
-    public function attend()
+    /**
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @author  WilsonParker
+     * @added   2021/08/15
+     * @updated 2021/08/15
+     */
+    public function attend(): ResponseInterface
     {
         $response = $this->call->post($this->url . $this->getAttendanceUri(), [
             'headers' => ['Cookie' => $this->getCookieSession()],
@@ -80,6 +100,7 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
         ]);
 
         $this->onAttendAfter($response);
+        return $response;
     }
 
     public function onAttendAfter(ResponseInterface $response)
@@ -113,6 +134,13 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     protected function getCookieSession(): string
     {
         return 'PHPSESSID=' . $this->getSession();
+    }
+
+    protected function runCallback($callback, $data)
+    {
+        if (isset($callback) && is_callable($callback)) {
+            $callback($data);
+        }
     }
 
 }
