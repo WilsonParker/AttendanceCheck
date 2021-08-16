@@ -5,7 +5,7 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "7.*",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.3",
         "laravel/framework": "^8.54",
@@ -28,7 +28,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "LaravelSupports\\": "app/Library/LaravelSupports/app",
+            "LaravelSupports\\": "app/Library/LaravelSupports/app"
         }
     },
     "autoload-dev": {
