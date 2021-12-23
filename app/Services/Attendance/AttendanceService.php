@@ -18,6 +18,7 @@ class AttendanceService
         };
 
         $config = config('platforms');
+
         $yesfile = $config['yesfile'];
         $yesfileService = new AttendService($yesfile['id'], $yesfile['pw']);
         $yesfileService->event($callback);

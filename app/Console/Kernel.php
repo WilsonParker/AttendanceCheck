@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Services\Attendance\AttendanceService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -30,7 +31,8 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             $service = new AttendanceService();
             $service->execute();
-        })->everyMinute();
+            Log::debug('attendance running');
+        })->at('00:10');
     }
 
     /**

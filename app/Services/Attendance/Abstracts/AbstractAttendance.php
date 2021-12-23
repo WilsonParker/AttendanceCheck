@@ -2,10 +2,13 @@
 
 namespace App\Services\Attendance\Abstracts;
 
+use App\Mail\OnAttended;
 use App\Services\Attendance\Contracts\AttendanceContract;
 use App\Services\Attendance\Contracts\LogInContract;
 use App\Services\Attendance\Contracts\LogOutContract;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Psr\Http\Message\ResponseInterface;
 
 abstract class AbstractAttendance implements LogInContract, LogOutContract, AttendanceContract
@@ -46,8 +49,14 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
      */
     public function event($callback = null)
     {
-        $this->login();
-        $this->runCallback($callback, $this->attend());
+        try {
+            $this->login();
+            $this->runCallback($callback, $this->attend());
+        } catch (\Throwable $throwable) {
+            dd($throwable);
+            Log::error($throwable->getMessage());
+            Mail::to('xogus0790@naver.com')->send(new OnAttended($throwable->getMessage()));
+        }
     }
 
     public function onLogInBefore()
@@ -69,10 +78,14 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
         $response = $this->call->post($this->url . $this->getLogInUri(), [
             'form_params' => $this->getLogInParams()
         ]);
-
+        $this->beforeSetSession($response);
         $this->setSession($response);
         $this->onLogInAfter($response);
         return $response;
+    }
+
+    public function beforeSetSession(ResponseInterface &$response)
+    {
     }
 
     public function onLogInAfter(ResponseInterface $response)
@@ -110,7 +123,6 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     public function logOut()
     {
         // TODO: Implement logOut() method.
-
         $this->onLogOutAfter();
     }
 

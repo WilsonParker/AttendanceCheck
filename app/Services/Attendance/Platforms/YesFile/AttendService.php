@@ -12,7 +12,8 @@ class AttendService extends AbstractAttendance
 
     public function getLogInUri(): string
     {
-        return '/login/';
+        return '/module/member.php';
+        // return '/login/';
     }
 
     public function getLogInParams(): array
@@ -24,8 +25,15 @@ class AttendService extends AbstractAttendance
             'new_home' => 'yes',
             'go_url' => '/',
             'login_key' => $this->loginKey,
+            'type' => 'login',
         ];
     }
+
+    public function beforeSetSession(ResponseInterface &$response)
+    {
+        // $response = $this->call->get($this->url);
+    }
+
 
     public function onLogInBefore()
     {
@@ -40,18 +48,19 @@ class AttendService extends AbstractAttendance
     public function getAttendanceParams(): array
     {
         return [
-            'type' => 'attend'
+            'type' => 'attend',
+            'id' => 'attendroulette',
         ];
     }
 
     public function getAttendanceUri(): string
     {
-        return '/event/attend_enevt.class.php';
+        return '/module/event/index.php';
+        // return '/event/attend_enevt.class.php';
     }
 
     public function onAttendAfter(ResponseInterface $response)
     {
-        // dd($response->getBody()->getContents());
     }
 
     public function getLogOutUri(): string
