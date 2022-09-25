@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Services\Attendance\Contracts\AttendanceContract;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -10,6 +11,7 @@ class OnAttended extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public AttendanceContract $contract;
     public $data;
 
     /**
@@ -17,9 +19,10 @@ class OnAttended extends Mailable
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct(AttendanceContract $contract, $data)
     {
         $this->data = $data;
+        $this->contract = $contract;
     }
 
     /**

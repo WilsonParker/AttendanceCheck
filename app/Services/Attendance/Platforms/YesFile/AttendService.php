@@ -70,4 +70,9 @@ class AttendService extends AbstractAttendance
     {
         return json_decode($response->getBody()->getContents(), JSON_UNESCAPED_UNICODE)['msg'];
     }
+
+    public function getPlatform(): string
+    {
+        return 'yes file';
+    }
 }

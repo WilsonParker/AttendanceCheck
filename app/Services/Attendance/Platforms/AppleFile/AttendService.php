@@ -49,4 +49,9 @@ class AttendService extends AbstractAttendance
         // TODO: Implement getLogOutUri() method.
         return '';
     }
+
+    public function getPlatform(): string
+    {
+        return 'apple file';
+    }
 }

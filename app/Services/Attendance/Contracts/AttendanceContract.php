@@ -17,4 +17,5 @@ interface AttendanceContract
 
     public function getResultMessage(ResponseInterface $response): string;
 
+    public function getPlatform(): string;
 }

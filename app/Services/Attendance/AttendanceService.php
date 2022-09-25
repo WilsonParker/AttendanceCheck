@@ -15,7 +15,7 @@ class AttendanceService
     {
         $callback = function (AttendanceContract $obj, ResponseInterface $response) {
             $result = $obj->getResultMessage($response);
-            Mail::to('xogus0790@naver.com')->send(new OnAttended($result));
+            Mail::to('xogus0790@naver.com')->send(new OnAttended($obj, $result));
         };
 
         $config = config('platforms');
