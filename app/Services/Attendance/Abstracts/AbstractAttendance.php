@@ -131,6 +131,11 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     {
     }
 
+    public function getResultMessage(ResponseInterface $response): string
+    {
+        return $response->getBody()->getContents();
+    }
+
     protected function setSession($response)
     {
         $cookie = $response->getHeader('Set-Cookie');
@@ -152,7 +157,7 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     protected function runCallback($callback, $data)
     {
         if (isset($callback) && is_callable($callback)) {
-            $callback($data);
+            $callback($this, $data);
         }
     }
 

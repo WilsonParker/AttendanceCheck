@@ -3,6 +3,7 @@
 namespace App\Services\Attendance;
 
 use App\Mail\OnAttended;
+use App\Services\Attendance\Contracts\AttendanceContract;
 use App\Services\Attendance\Platforms\YesFile\AttendService;
 use Illuminate\Support\Facades\Mail;
 use Psr\Http\Message\ResponseInterface;
@@ -12,9 +13,8 @@ class AttendanceService
 
     public function execute()
     {
-        $callback = function (ResponseInterface $response) {
-            $result = json_decode($response->getBody()->getContents(), JSON_UNESCAPED_UNICODE);
-            dump($result);
+        $callback = function (AttendanceContract $obj, ResponseInterface $response) {
+            $result = $obj->getResultMessage($response);
             Mail::to('xogus0790@naver.com')->send(new OnAttended($result));
         };
 

@@ -66,4 +66,8 @@ class AttendService extends AbstractAttendance
         return '/login/index.php?pg_mode=out';
     }
 
+    public function getResultMessage(ResponseInterface $response): string
+    {
+        return json_decode($response->getBody()->getContents(), JSON_UNESCAPED_UNICODE)['msg'];
+    }
 }

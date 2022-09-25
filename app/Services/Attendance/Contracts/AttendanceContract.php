@@ -15,4 +15,6 @@ interface AttendanceContract
 
     public function onAttendAfter(ResponseInterface $response);
 
+    public function getResultMessage(ResponseInterface $response): string;
+
 }
