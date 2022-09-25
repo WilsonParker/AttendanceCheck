@@ -1,4 +1,4 @@
 <div>
-    Platform: {{ $contract->getPlatform() }}
-    Result: {{ $data }}
+    <p>Platform: {{ $contract->getPlatform() }}</p>
+    <p>Result: {{ $data }}</p>
 </div>
