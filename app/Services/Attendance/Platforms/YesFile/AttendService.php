@@ -13,7 +13,6 @@ class AttendService extends AbstractAttendance
     public function getLogInUri(): string
     {
         return '/module/member.php';
-        // return '/login/';
     }
 
     public function getLogInParams(): array
@@ -56,7 +55,6 @@ class AttendService extends AbstractAttendance
     public function getAttendanceUri(): string
     {
         return '/module/event/index.php';
-        // return '/event/attend_enevt.class.php';
     }
 
     public function onAttendAfter(ResponseInterface $response)

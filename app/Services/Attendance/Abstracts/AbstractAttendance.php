@@ -50,10 +50,9 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     public function event($callback = null)
     {
         try {
-            $this->login();
+            $this->logIn();
             $this->runCallback($callback, $this->attend());
         } catch (\Throwable $throwable) {
-            dd($throwable);
             Log::error($throwable->getMessage());
             Mail::to('xogus0790@naver.com')->send(new OnAttended($throwable->getMessage()));
         }
@@ -108,7 +107,9 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     public function attend(): ResponseInterface
     {
         $response = $this->call->post($this->url . $this->getAttendanceUri(), [
-            'headers' => ['Cookie' => $this->getCookieSession()],
+            'headers' => [
+                'Cookie' => $this->getCookieSession(),
+            ],
             'form_params' => $this->getAttendanceParams(),
         ]);
 

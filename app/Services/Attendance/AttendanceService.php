@@ -13,7 +13,8 @@ class AttendanceService
     public function execute()
     {
         $callback = function (ResponseInterface $response) {
-            $result = $response->getBody()->getContents();
+            $result = json_decode($response->getBody()->getContents(), JSON_UNESCAPED_UNICODE);
+            dump($result);
             Mail::to('xogus0790@naver.com')->send(new OnAttended($result));
         };
 

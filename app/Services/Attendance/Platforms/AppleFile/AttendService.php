@@ -21,7 +21,6 @@ class AttendService extends AbstractAttendance
 
     public function onLogInAfter(ResponseInterface $response)
     {
-        // dd($response->getBody()->getContents());
     }
 
     public function event($callback = null)
@@ -32,7 +31,7 @@ class AttendService extends AbstractAttendance
 
     public function onAttendAfter(ResponseInterface $response)
     {
-        dd($response->getBody()->getContents());
+
     }
 
     public function getLogInUri(): string
@@ -48,5 +47,6 @@ class AttendService extends AbstractAttendance
     public function getLogOutUri(): string
     {
         // TODO: Implement getLogOutUri() method.
+        return '';
     }
 }
