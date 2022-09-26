@@ -9,6 +9,7 @@ class AttendService extends AbstractAttendance
 {
     protected string $url = 'https://www.yesfile.com';
     private string $loginKey;
+    private string $cookie;
 
     public function getLogInUri(): string
     {
@@ -21,8 +22,8 @@ class AttendService extends AbstractAttendance
             self::USER_ID => $this->id,
             self::USER_PW => $this->pw,
             'pg_mode' => 'login',
-            'new_home' => 'yes',
-            'go_url' => '/',
+//            'new_home' => 'yes',
+//            'go_url' => '/',
             'login_key' => $this->loginKey,
             'type' => 'login',
         ];
@@ -50,6 +51,13 @@ class AttendService extends AbstractAttendance
             'type' => 'attend',
             'id' => 'attendroulette',
         ];
+    }
+
+    public function onLogInAfter(ResponseInterface $response)
+    {
+        $response = $this->call->get($this->url . '/event/#tab=view&id=attendroulette', [
+            'cookies' => $this->cookieJar
+        ]);
     }
 
     public function getAttendanceUri(): string

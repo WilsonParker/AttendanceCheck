@@ -7,6 +7,7 @@ use App\Services\Attendance\Contracts\AttendanceContract;
 use App\Services\Attendance\Contracts\LogInContract;
 use App\Services\Attendance\Contracts\LogOutContract;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Psr\Http\Message\ResponseInterface;
@@ -21,6 +22,7 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     protected string $pw;
     protected string $session;
     protected Client $call;
+    protected CookieJar $cookieJar;
 
     /**
      * @param string $id
@@ -35,7 +37,8 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
 
     protected function init()
     {
-        $this->call = new Client();
+        $this->cookieJar = new CookieJar();
+        $this->call = new Client(['cookies' => true]);
     }
 
     /**
@@ -75,7 +78,8 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
         $this->onLogInBefore();
 
         $response = $this->call->post($this->url . $this->getLogInUri(), [
-            'form_params' => $this->getLogInParams()
+            'form_params' => $this->getLogInParams(),
+            'cookies' => $this->cookieJar,
         ]);
         $this->beforeSetSession($response);
         $this->setSession($response);
@@ -110,9 +114,9 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
             'headers' => [
                 'Cookie' => $this->getCookieSession(),
             ],
+            'cookies' => $this->cookieJar,
             'form_params' => $this->getAttendanceParams(),
         ]);
-
         $this->onAttendAfter($response);
         return $response;
     }
