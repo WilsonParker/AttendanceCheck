@@ -24,6 +24,10 @@ class AttendanceService
         $yesfileService = new AttendService($yesfile['id'], $yesfile['pw']);
         $yesfileService->event($callback);
 
+        $yesfile2 = $config['yesfile2'];
+        $yesfileService2 = new AttendService($yesfile2['id'], $yesfile2['pw']);
+        $yesfileService2->event($callback);
+
         $applefile = $config['applefile'];
         $applefileService = new \App\Services\Attendance\Platforms\AppleFile\AttendService($applefile['id'], $applefile['pw']);
         $applefileService->event($callback);
