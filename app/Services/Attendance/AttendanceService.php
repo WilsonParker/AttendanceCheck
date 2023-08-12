@@ -5,6 +5,7 @@ namespace App\Services\Attendance;
 use App\Mail\OnAttended;
 use App\Models\Site\SiteAccount;
 use App\Services\Attendance\Contracts\AttendanceContract;
+use App\Services\Attendance\Mail\AttendanceResultMail;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -19,22 +20,27 @@ class AttendanceService
 
     public function execute(): void
     {
-        $callback = function (AttendanceContract $obj, ResponseInterface $response) {
-            $result = $obj->getResultMessage($response);
-            Mail::to(config('platforms.mail_to'))->send(new OnAttended($obj, $result));
+        $mail = [];
+
+        $callback = function (AttendanceContract $contract, ResponseInterface $response) use (&$mail) {
+            $mail[] = new AttendanceResultMail($contract->getPlatform(), $contract->getAccountId(), $contract->getResultMessage($response));
         };
 
         SiteAccount::all()
-                   ->each(function (SiteAccount $siteAccount) use ($callback) {
+                   ->each(function (SiteAccount $siteAccount) use ($callback, &$mail) {
+                       $id = Crypt::decryptString($siteAccount->account_id);
                        try {
                            $type = SiteType::from($siteAccount->type->getKey());
                            $this->factory->build($type)->event($callback, [
-                                 'id' => Crypt::decryptString($siteAccount->account_id),
-                                 'pw' => Crypt::decryptString($siteAccount->account_password),
+                               'id' => $id,
+                               'pw' => Crypt::decryptString($siteAccount->account_password),
                            ]);
                        } catch (\Throwable $throwable) {
+                           $mail[] = new AttendanceResultMail($type->value, $id, $throwable->getMessage());
                            Log::error($throwable->getMessage());
                        }
                    });
+
+        Mail::to(config('platforms.mail_to'))->send(new OnAttended($mail));
     }
 }

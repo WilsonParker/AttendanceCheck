@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AttendanceCommand;
 use App\Console\Commands\EnsureQueueListenerIsRunning;
 use App\Services\Attendance\AttendanceService;
 use Illuminate\Console\Scheduling\Schedule;
@@ -30,11 +31,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command(EnsureQueueListenerIsRunning::class)->hourly()->sendOutputTo('schedule_daily.txt', true);
 
-        $schedule->call(function () {
-            $service = app()->make(AttendanceService::class);
-            $service->execute();
-            Log::debug('attendance running');
-        })->everySixHours();
+        $schedule->command(AttendanceCommand::class)->everySixHours();
     }
 
     /**

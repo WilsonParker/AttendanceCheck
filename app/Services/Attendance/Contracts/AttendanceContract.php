@@ -20,4 +20,6 @@ interface AttendanceContract
     public function getPlatform(): string;
 
     public function event(callable $callback, array $credential);
+
+    public function getAccountId(): string;
 }

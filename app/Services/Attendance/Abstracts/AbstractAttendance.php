@@ -125,6 +125,11 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
         return $response->getBody()->getContents();
     }
 
+    public function getAccountId(): string
+    {
+        return $this->credential['id'];
+    }
+
     protected function setSession($response)
     {
         $cookie = $response->getHeader('Set-Cookie');
