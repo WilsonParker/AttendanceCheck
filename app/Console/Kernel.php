@@ -4,10 +4,8 @@ namespace App\Console;
 
 use App\Console\Commands\AttendanceCommand;
 use App\Console\Commands\EnsureQueueListenerIsRunning;
-use App\Services\Attendance\AttendanceService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
