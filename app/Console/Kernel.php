@@ -31,10 +31,10 @@ class Kernel extends ConsoleKernel
         $schedule->command(EnsureQueueListenerIsRunning::class)->hourly()->sendOutputTo('schedule_daily.txt', true);
 
         $schedule->call(function () {
-            $service = new AttendanceService();
+            $service = app()->make(AttendanceService::class);
             $service->execute();
             Log::debug('attendance running');
-        })->at('00:10');
+        })->everySixHours();
     }
 
     /**

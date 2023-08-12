@@ -18,8 +18,7 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     protected const USER_PW = 'userpw';
 
     protected string $url;
-    protected string $id;
-    protected string $pw;
+    protected array $crediential;
     protected string $session;
     protected Client $call;
     protected CookieJar $cookieJar;
@@ -28,10 +27,8 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
      * @param string $id
      * @param string $pw
      */
-    public function __construct(string $id, string $pw)
+    public function __construct()
     {
-        $this->id = $id;
-        $this->pw = $pw;
         $this->init();
     }
 
@@ -42,7 +39,6 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     }
 
     /**
-     *
      * @param null $callback
      * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -50,23 +46,21 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
      * @added   2021/08/15
      * @updated 2021/08/15
      */
-    public function event($callback = null)
+    public function event($callback = null, array $crediential = [])
     {
         try {
+            $this->crediential = $crediential;
             $this->logIn();
             $this->runCallback($callback, $this->attend());
         } catch (\Throwable $throwable) {
             Log::error($throwable->getMessage());
-            Mail::to('xogus0790@naver.com')->send(new OnAttended($throwable->getMessage()));
+            Mail::to('xogus0790@naver.com')->send(new OnAttended($this, $throwable->getMessage()));
         }
     }
 
-    public function onLogInBefore()
-    {
-    }
+    public function onLogInBefore() {}
 
     /**
-     *
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @author  WilsonParker
@@ -87,13 +81,9 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
         return $response;
     }
 
-    public function beforeSetSession(ResponseInterface &$response)
-    {
-    }
+    public function beforeSetSession(ResponseInterface &$response) {}
 
-    public function onLogInAfter(ResponseInterface $response)
-    {
-    }
+    public function onLogInAfter(ResponseInterface $response) {}
 
     public function getAttendanceParams(): array
     {
@@ -101,7 +91,6 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     }
 
     /**
-     *
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @author  WilsonParker
@@ -121,9 +110,7 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
         return $response;
     }
 
-    public function onAttendAfter(ResponseInterface $response)
-    {
-    }
+    public function onAttendAfter(ResponseInterface $response) {}
 
     public function logOut()
     {
@@ -131,9 +118,7 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
         $this->onLogOutAfter();
     }
 
-    public function onLogOutAfter()
-    {
-    }
+    public function onLogOutAfter() {}
 
     public function getResultMessage(ResponseInterface $response): string
     {

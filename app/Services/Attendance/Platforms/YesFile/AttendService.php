@@ -19,8 +19,8 @@ class AttendService extends AbstractAttendance
     public function getLogInParams(): array
     {
         return [
-            self::USER_ID => $this->id,
-            self::USER_PW => $this->pw,
+            self::USER_ID => $this->credential['id'],
+            self::USER_PW => $this->credential['pw'],
             'pg_mode' => 'login',
 //            'new_home' => 'yes',
 //            'go_url' => '/',
