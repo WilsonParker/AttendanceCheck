@@ -12,8 +12,8 @@ class AttendService extends AbstractAttendance
     public function getLogInParams(): array
     {
         return [
-            self::USER_ID => $this->crediential['id'],
-            self::USER_PW => $this->crediential['pw'],
+            self::USER_ID => $this->credential['id'],
+            self::USER_PW => $this->credential['pw'],
             'type' => 'login',
             'save_id' => false,
         ];
@@ -23,9 +23,9 @@ class AttendService extends AbstractAttendance
     {
     }
 
-    public function event($callback = null, array $crediential = [])
+    public function event(callable $callback, array $credential): void
     {
-        $this->crediential = $crediential;
+        $this->credential = $credential;
         $this->runCallback($callback, $this->logIn());
     }
 

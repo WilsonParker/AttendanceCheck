@@ -3,33 +3,38 @@
 namespace App\Services\Attendance;
 
 use App\Mail\OnAttended;
+use App\Models\Site\SiteAccount;
 use App\Services\Attendance\Contracts\AttendanceContract;
-use App\Services\Attendance\Platforms\YesFile\AttendService;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Psr\Http\Message\ResponseInterface;
 
 class AttendanceService
 {
 
-    public function execute()
+    public function __construct(
+        private readonly AttendanceFactory $factory
+    ) {}
+
+    public function execute(): void
     {
         $callback = function (AttendanceContract $obj, ResponseInterface $response) {
             $result = $obj->getResultMessage($response);
-            Mail::to('xogus0790@naver.com')->send(new OnAttended($obj, $result));
+            Mail::to(config('platforms.mail_to'))->send(new OnAttended($obj, $result));
         };
 
-        $config = config('platforms');
-
-        $yesfile = $config['yesfile'];
-        $yesfileService = new AttendService();
-        $yesfileService->event($callback);
-
-        $yesfile2 = $config['yesfile2'];
-        $yesfileService2 = new AttendService();
-        $yesfileService2->event($callback);
-
-        $applefile = $config['applefile'];
-        $applefileService = new \App\Services\Attendance\Platforms\AppleFile\AttendService();
-        $applefileService->event($callback);
+        SiteAccount::all()
+                   ->each(function (SiteAccount $siteAccount) use ($callback) {
+                       try {
+                           $type = SiteType::from($siteAccount->type->getKey());
+                           $this->factory->build($type)->event($callback, [
+                                 'id' => Crypt::decryptString($siteAccount->account_id),
+                                 'pw' => Crypt::decryptString($siteAccount->account_password),
+                           ]);
+                       } catch (\Throwable $throwable) {
+                           Log::error($throwable->getMessage());
+                       }
+                   });
     }
 }

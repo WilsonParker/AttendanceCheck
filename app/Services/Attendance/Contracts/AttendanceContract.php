@@ -18,4 +18,6 @@ interface AttendanceContract
     public function getResultMessage(ResponseInterface $response): string;
 
     public function getPlatform(): string;
+
+    public function event(callable $callback, array $credential);
 }

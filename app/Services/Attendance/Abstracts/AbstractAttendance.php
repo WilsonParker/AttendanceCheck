@@ -18,7 +18,7 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     protected const USER_PW = 'userpw';
 
     protected string $url;
-    protected array $crediential;
+    protected array $credential;
     protected string $session;
     protected Client $call;
     protected CookieJar $cookieJar;
@@ -39,22 +39,22 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     }
 
     /**
-     * @param null $callback
+     * @param callable $callback
+     * @param array    $credential
      * @return void
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @author  WilsonParker
      * @added   2021/08/15
-     * @updated 2021/08/15
+     * @updated 2023/08/13
      */
-    public function event($callback = null, array $crediential = [])
+    public function event(callable $callback, array $credential): void
     {
         try {
-            $this->crediential = $crediential;
+            $this->credential = $credential;
             $this->logIn();
             $this->runCallback($callback, $this->attend());
         } catch (\Throwable $throwable) {
             Log::error($throwable->getMessage());
-            Mail::to('xogus0790@naver.com')->send(new OnAttended($this, $throwable->getMessage()));
+            Mail::to(config('platforms.mail_to'))->send(new OnAttended($this, $throwable->getMessage()));
         }
     }
 

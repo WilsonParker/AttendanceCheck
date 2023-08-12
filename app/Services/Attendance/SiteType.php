@@ -4,6 +4,7 @@ namespace App\Services\Attendance;
 
 enum SiteType: string
 {
+    case YesFile = 'yesfile';
+    case AppleFile = 'applefile';
 }
-const YesFile = 'yesfile';
-const AppleFile = 'applefile';
+
