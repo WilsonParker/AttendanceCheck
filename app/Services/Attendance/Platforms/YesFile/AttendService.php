@@ -3,6 +3,7 @@
 namespace App\Services\Attendance\Platforms\YesFile;
 
 use App\Services\Attendance\Abstracts\AbstractAttendance;
+use App\Services\Attendance\SiteType;
 use Psr\Http\Message\ResponseInterface;
 
 class AttendService extends AbstractAttendance
@@ -81,6 +82,6 @@ class AttendService extends AbstractAttendance
 
     public function getPlatform(): string
     {
-        return 'yes file';
+        return SiteType::YesFile->value;
     }
 }

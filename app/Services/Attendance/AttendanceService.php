@@ -4,37 +4,35 @@ namespace App\Services\Attendance;
 
 use App\Mail\OnAttended;
 use App\Models\Site\SiteAccount;
-use App\Services\Attendance\Contracts\AttendanceContract;
+use App\Services\Attendance\Contracts\AttendanceFailContract;
+use App\Services\Attendance\Contracts\AttendanceSuccessContract;
 use App\Services\Attendance\Mail\AttendanceResultMail;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Psr\Http\Message\ResponseInterface;
 
 class AttendanceService
 {
 
     public function __construct(
-        private readonly AttendanceFactory $factory
+        private readonly AttendanceFactory         $factory,
+        private readonly AttendanceSuccessContract $successContract,
+        private readonly AttendanceFailContract    $failContract,
     ) {}
 
     public function execute(): void
     {
         $mail = [];
-
-        $callback = function (AttendanceContract $contract, ResponseInterface $response) use (&$mail) {
-            $mail[] = new AttendanceResultMail($contract->getPlatform(), $contract->getAccountId(), $contract->getResultMessage($response));
-        };
-
         SiteAccount::all()
-                   ->each(function (SiteAccount $siteAccount) use ($callback, &$mail) {
+                   ->each(function (SiteAccount $siteAccount) use (&$mail) {
                        $id = Crypt::decryptString($siteAccount->account_id);
                        try {
                            $type = SiteType::from($siteAccount->type->getKey());
-                           $this->factory->build($type)->event($callback, [
-                               'id' => $id,
-                               'pw' => Crypt::decryptString($siteAccount->account_password),
-                           ]);
+                           $mail[] = $this->factory->build($type)
+                                                   ->event($this->successContract, $this->failContract, [
+                                                       'id' => $id,
+                                                       'pw' => Crypt::decryptString($siteAccount->account_password),
+                                                   ]);
                        } catch (\Throwable $throwable) {
                            $mail[] = new AttendanceResultMail($type->value, $id, $throwable->getMessage());
                            Log::error($throwable->getMessage());

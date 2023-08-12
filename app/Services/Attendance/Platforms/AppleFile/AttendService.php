@@ -3,6 +3,9 @@
 namespace App\Services\Attendance\Platforms\AppleFile;
 
 use App\Services\Attendance\Abstracts\AbstractAttendance;
+use App\Services\Attendance\Contracts\AttendanceFailContract;
+use App\Services\Attendance\Contracts\AttendanceSuccessContract;
+use App\Services\Attendance\SiteType;
 use Psr\Http\Message\ResponseInterface;
 
 class AttendService extends AbstractAttendance
@@ -23,10 +26,14 @@ class AttendService extends AbstractAttendance
     {
     }
 
-    public function event(callable $callback, array $credential): void
+    public function event(AttendanceSuccessContract $contract, AttendanceFailContract $errorContract, array $credential)
     {
-        $this->credential = $credential;
-        $this->runCallback($callback, $this->logIn());
+        try {
+            $this->credential = $credential;
+            return $contract->success($this, $this->logIn());
+        } catch (\Throwable $throwable) {
+            return $errorContract->fail($this, $throwable);
+        }
     }
 
 
@@ -51,8 +58,13 @@ class AttendService extends AbstractAttendance
         return '';
     }
 
+    public function getResultMessage(ResponseInterface $response): string
+    {
+        return json_decode($response->getBody()->getContents(), JSON_UNESCAPED_UNICODE)['alert'];
+    }
+
     public function getPlatform(): string
     {
-        return 'apple file';
+        return SiteType::AppleFile->value;
     }
 }

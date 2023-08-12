@@ -2,14 +2,13 @@
 
 namespace App\Services\Attendance\Abstracts;
 
-use App\Mail\OnAttended;
 use App\Services\Attendance\Contracts\AttendanceContract;
+use App\Services\Attendance\Contracts\AttendanceFailContract;
+use App\Services\Attendance\Contracts\AttendanceSuccessContract;
 use App\Services\Attendance\Contracts\LogInContract;
 use App\Services\Attendance\Contracts\LogOutContract;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Psr\Http\Message\ResponseInterface;
 
 abstract class AbstractAttendance implements LogInContract, LogOutContract, AttendanceContract
@@ -39,22 +38,21 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     }
 
     /**
-     * @param callable $callback
+     * @param callable $contract
      * @param array    $credential
      * @return void
      * @author  WilsonParker
      * @added   2021/08/15
      * @updated 2023/08/13
      */
-    public function event(callable $callback, array $credential): void
+    public function event(AttendanceSuccessContract $contract, AttendanceFailContract $errorContract, array $credential)
     {
         try {
             $this->credential = $credential;
             $this->logIn();
-            $this->runCallback($callback, $this->attend());
+            return $contract->success($this, $this->attend());
         } catch (\Throwable $throwable) {
-            Log::error($throwable->getMessage());
-            Mail::to(config('platforms.mail_to'))->send(new OnAttended($this, $throwable->getMessage()));
+            return $errorContract->fail($this, $throwable);
         }
     }
 

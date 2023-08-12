@@ -19,7 +19,7 @@ interface AttendanceContract
 
     public function getPlatform(): string;
 
-    public function event(callable $callback, array $credential);
+    public function event(AttendanceSuccessContract $contract, AttendanceFailContract $errorContract, array $credential);
 
     public function getAccountId(): string;
 }
