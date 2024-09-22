@@ -20,6 +20,7 @@
     "swiftmailer/swiftmailer": "^6.0"
   },
   "require-dev": {
+    "aschmelyun/fleet": "^1.1",
     "fakerphp/faker": "^1.9.1",
     "laravel/dusk": "^8.2",
     "laravel/passport": "^12.0",

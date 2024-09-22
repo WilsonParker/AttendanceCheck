@@ -5,6 +5,7 @@
 /vendor
 .env
 .env.backup
+.env.development
 .env.production
 .phpunit.result.cache
 docker-compose.override.yml
@@ -15,3 +16,4 @@ yarn-error.log
 /.idea
 /.vscode
 .phpunit.cache/test-results
+docker-compose.yml
