@@ -33,7 +33,8 @@ abstract class AbstractDuskAttendance
 
         $browser
             ->click($this->getSelectorLoginButton())
-            ->waitForReload();
+            ->waitForReload()
+            ->assertSee('춣석');
     }
 
     abstract protected function getUrl(): string;

@@ -7,7 +7,6 @@ use App\Models\Site\SiteAccount;
 use App\Services\Attendance\Contracts\Dusk\AttendanceFactoryContract;
 use App\Services\Attendance\Contracts\Dusk\SiteAccountContract;
 use App\Services\Attendance\Mail\AttendanceResultMail;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Dusk\Browser;
@@ -23,14 +22,14 @@ class DuskAttendanceService
     public function execute(Browser $browser): void
     {
         $mail = [];
+        $browser->stop();
         SiteAccount::all()
                    ->each(function (SiteAccountContract $siteAccount) use (&$mail, $browser) {
-                       $id = Crypt::decryptString($siteAccount->getAccountId());
                        try {
                            $type = SiteType::tryFrom($siteAccount->getTypeKey());
                            $mail[] = $this->factory->build($type)->event($browser, $siteAccount);
                        } catch (Throwable $throwable) {
-                           $mail[] = new AttendanceResultMail($siteAccount->getTypeKey(), $id, $throwable->getMessage());
+                           $mail[] = new AttendanceResultMail($siteAccount->getTypeKey(), $siteAccount->getAccountId(), $throwable->getMessage());
                            Log::error($throwable->getMessage());
                        }
                    });

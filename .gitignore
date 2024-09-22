@@ -15,5 +15,5 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
-.phpunit.cache/test-results
+.phpunit.cache
 docker-compose.yml

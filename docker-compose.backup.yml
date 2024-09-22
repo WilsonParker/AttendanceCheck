@@ -56,6 +56,9 @@ services:
       - '/dev/shm:/dev/shm'
     networks:
       - sail
+    environment:
+      - GRID_MAX_SESSION=10  # Adjust the session pool size
+      - GRID_TIMEOUT=30       # Set session timeout (in seconds)
 networks:
   sail:
     driver: bridge

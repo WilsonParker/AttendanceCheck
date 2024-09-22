@@ -10,6 +10,7 @@ use App\Services\Attendance\Contracts\LogOutContract;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 abstract class AbstractAttendance implements LogInContract, LogOutContract, AttendanceContract
 {
@@ -51,7 +52,8 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
             $this->credential = $credential;
             $this->logIn();
             return $contract->success($this, $this->attend());
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
+            dd($throwable);
             return $errorContract->fail($this, $throwable);
         }
     }
@@ -71,6 +73,9 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
             'POST',
             $this->getLogInUri(),
             [
+                'headers'     => [
+                    'referer' => 'https://www.yesfile.com/',
+                ],
                 'form_params' => $this->getLogInParams(),
                 'cookies'     => $this->cookieJar,
             ],
