@@ -50,7 +50,7 @@ class AttendanceProvider extends AppServiceProvider
         ]));
 
         app()->singleton(DuskAttendanceService::class, fn($app) => new DuskAttendanceService(
-            $app->make(AttendanceFactoryContract::class::class),
+            $app->make(AttendanceFactoryContract::class),
         ));
     }
 
