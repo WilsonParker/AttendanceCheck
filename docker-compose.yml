@@ -23,7 +23,6 @@ services:
       - fleet
     depends_on:
       - mysql
-      - selenium
     labels:
       - traefik.http.routers.attendance-localhost.rule=Host(`attendance.localhost`)
       - traefik.http.services.attendance-localhost.loadbalancer.server.port=80
@@ -51,14 +50,6 @@ services:
         - '-p${DB_PASSWORD}'
       retries: 3
       timeout: 5s
-  selenium:
-    image: selenium/standalone-chromium
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-    volumes:
-      - '/dev/shm:/dev/shm'
-    networks:
-      - sail
 networks:
   sail:
     driver: bridge
