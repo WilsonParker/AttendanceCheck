@@ -34,7 +34,10 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     protected function init()
     {
         $this->cookieJar = new CookieJar();
-        $this->call = new Client(['cookies' => true]);
+        $this->call = new Client([
+            'cookies'  => true,
+            'base_uri' => $this->url,
+        ]);
     }
 
     /**
@@ -68,14 +71,22 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     {
         $this->onLogInBefore();
 
-        $response = $this->call->post($this->url . $this->getLogInUri(), [
-            'header'      => [
-
+        $response = $this->call->request(
+            'POST',
+            $this->getLogInUri(),
+            [
+                'headers'     => [
+                    'User-Agent'   => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                    'Accept'       => 'application/json, text/javascript, */*; q=0.01',
+                    'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8',
+                    'Origin'       => 'https://www.yesfile.com',
+                ],
+                'form_params' => $this->getLogInParams(),
+                'cookies'     => $this->cookieJar,
+                'debug'       => true,
             ],
-            'form_params' => $this->getLogInParams(),
-            'cookies'     => $this->cookieJar,
-        ]);
-        dd($response->getBody());
+        );
+        dd($response->getBody()->getContents());
         $this->beforeSetSession($response);
         $this->setSession($response);
         $this->onLogInAfter($response);
