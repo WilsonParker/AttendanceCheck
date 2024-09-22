@@ -20,13 +20,9 @@ services:
       - '.:/var/www/html'
     networks:
       - sail
-      - fleet
     depends_on:
       - mysql
       - selenium
-    labels:
-      - traefik.http.routers.attendance-localhost.rule=Host(`attendance.localhost`)
-      - traefik.http.services.attendance-localhost.loadbalancer.server.port=80
   mysql:
     image: 'mysql/mysql-server:8.0'
     ports:
@@ -62,8 +58,6 @@ services:
 networks:
   sail:
     driver: bridge
-  fleet:
-    external: true
 volumes:
   sail-mysql:
     driver: local
