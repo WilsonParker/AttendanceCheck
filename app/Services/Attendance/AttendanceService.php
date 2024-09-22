@@ -15,9 +15,9 @@ class AttendanceService
 {
 
     public function __construct(
-        private readonly AttendanceFactory         $factory,
+        private readonly AttendanceFactory $factory,
         private readonly AttendanceSuccessContract $successContract,
-        private readonly AttendanceFailContract    $failContract,
+        private readonly AttendanceFailContract $failContract,
     ) {}
 
     public function execute(): void
@@ -27,7 +27,7 @@ class AttendanceService
                    ->each(function (SiteAccount $siteAccount) use (&$mail) {
                        $id = Crypt::decryptString($siteAccount->account_id);
                        try {
-                           $type = SiteType::from($siteAccount->type->getKey());
+                           $type = SiteType::from($siteAccount->getTypeKey());
                            $mail[] = $this->factory->build($type)
                                                    ->event($this->successContract, $this->failContract, [
                                                        'id' => $id,

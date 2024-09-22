@@ -2,9 +2,10 @@
 
 namespace App\Models\Site;
 
+use App\Services\Attendance\Contracts\SiteAccountContract;
 use Illuminate\Database\Eloquent\Model;
 
-class SiteAccount extends Model
+class SiteAccount extends Model implements SiteAccountContract
 {
     protected $table = 'site_accounts';
     protected $guarded = [];
@@ -14,4 +15,18 @@ class SiteAccount extends Model
         return $this->belongsTo(SiteType::class, 'site_type_code', 'code');
     }
 
+    public function getTypeKey(): string
+    {
+        return $this->type->getKey();
+    }
+
+    public function getAccount(): string
+    {
+        return $this->account_id;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->account_password;
+    }
 }
