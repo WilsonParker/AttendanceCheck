@@ -42,14 +42,15 @@ class AttendanceProvider extends AppServiceProvider
     private function registerDuskAttendance(): void
     {
         app()->singleton(Platforms\YesFile\DuskAttendService::class, fn($app) => new Platforms\YesFile\DuskAttendService());
+        app()->singleton(Platforms\AppleFile\DuskAttendService::class, fn($app) => new Platforms\AppleFile\DuskAttendService());
 
         app()->singleton(AttendanceFactoryContract::class, fn($app) => new DuskAttendanceFactory([
-            SiteType::YesFile->value => app()->make(Platforms\YesFile\DuskAttendService::class),
+            SiteType::YesFile->value   => app()->make(Platforms\YesFile\DuskAttendService::class),
+            SiteType::AppleFile->value => app()->make(Platforms\AppleFile\DuskAttendService::class),
         ]));
 
-
         app()->singleton(DuskAttendanceService::class, fn($app) => new DuskAttendanceService(
-            $app->make(Platforms\YesFile\DuskAttendService::class::class),
+            $app->make(AttendanceFactoryContract::class::class),
         ));
     }
 
