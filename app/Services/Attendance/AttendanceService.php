@@ -8,9 +8,9 @@ use App\Services\Attendance\Contracts\AttendanceFailContract;
 use App\Services\Attendance\Contracts\AttendanceSuccessContract;
 use App\Services\Attendance\Contracts\SiteAccountContract;
 use App\Services\Attendance\Mail\AttendanceResultMail;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class AttendanceService
 {
@@ -26,15 +26,15 @@ class AttendanceService
         $mail = [];
         SiteAccount::all()
                    ->each(function (SiteAccountContract $siteAccount) use (&$mail) {
-                       $id = Crypt::decryptString($siteAccount->getAccountId());
+                       $id = $siteAccount->getAccountId();
                        try {
                            $type = SiteType::tryFrom($siteAccount->getTypeKey());
                            $mail[] = $this->factory->build($type)
                                                    ->event($this->successContract, $this->failContract, [
                                                        'id' => $id,
-                                                       'pw' => Crypt::decryptString($siteAccount->getPassword()),
+                                                       'pw' => $siteAccount->getPassword(),
                                                    ]);
-                       } catch (\Throwable $throwable) {
+                       } catch (Throwable $throwable) {
                            $mail[] = new AttendanceResultMail($siteAccount->getTypeKey(), $id, $throwable->getMessage());
                            Log::error($throwable->getMessage());
                        }

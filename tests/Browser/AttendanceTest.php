@@ -5,13 +5,14 @@ namespace Tests\Browser;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
-class LoginTest extends DuskTestCase
+class AttendanceTest extends DuskTestCase
 {
     /**
      * A Dusk test example.
      */
     public function testExample(): void
     {
+
         $this->browse(function (Browser $browser) {
             $browser->visit('https://m.yesfile.com/login')
                     ->script([
@@ -21,8 +22,7 @@ class LoginTest extends DuskTestCase
 
             $browser
                 ->click('#member_login')
-                ->waitForReload()
-                ->screenshot('filename1');
+                ->waitForReload();
         });
     }
 }

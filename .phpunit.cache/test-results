@@ -1,1 +1,1 @@
-{"version":1,"defects":{"Tests\\Browser\\ExampleTest::testBasicExample":7,"Tests\\Browser\\LoginTest::testExample":7},"times":{"Tests\\Browser\\ExampleTest::testBasicExample":0.805,"Tests\\Browser\\LoginTest::testExample":0.636}}
+{"version":1,"defects":{"Tests\\Browser\\ExampleTest::testBasicExample":7,"Tests\\Browser\\LoginTest::testExample":7,"Tests\\Browser\\AttendanceTest::testExample":8},"times":{"Tests\\Browser\\ExampleTest::testBasicExample":1.152,"Tests\\Browser\\LoginTest::testExample":0.636,"Tests\\Browser\\AttendanceTest::testExample":27.834}}

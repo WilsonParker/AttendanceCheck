@@ -4,13 +4,15 @@ namespace App\Models\Site;
 
 use App\Services\Attendance\Contracts\SiteAccountContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Crypt;
 
 class SiteAccount extends Model implements SiteAccountContract
 {
     protected $table = 'site_accounts';
     protected $guarded = [];
 
-    public function type(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function type(): BelongsTo
     {
         return $this->belongsTo(SiteType::class, 'site_type_code', 'code');
     }
@@ -22,11 +24,11 @@ class SiteAccount extends Model implements SiteAccountContract
 
     public function getAccountId(): string
     {
-        return $this->account_id;
+        return Crypt::decryptString($this->account_id);
     }
 
     public function getPassword(): string
     {
-        return $this->account_password;
+        return Crypt::decryptString($this->account_password);
     }
 }

@@ -28,5 +28,7 @@ class AttendanceProvider extends AppServiceProvider
             $app->make(AttendanceSuccessContract::class),
             $app->make(AttendanceFailContract::class),
         ));
+
+        app()->singleton(Platforms\YesFile\DuskAttendService::class, fn($app) => new Platforms\YesFile\DuskAttendService());
     }
 }

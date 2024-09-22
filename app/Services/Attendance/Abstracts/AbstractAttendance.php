@@ -22,10 +22,6 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     protected Client $call;
     protected CookieJar $cookieJar;
 
-    /**
-     * @param string $id
-     * @param string $pw
-     */
     public function __construct()
     {
         $this->init();
@@ -41,8 +37,9 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     }
 
     /**
-     * @param callable $contract
-     * @param array    $credential
+     * @param \App\Services\Attendance\Contracts\AttendanceSuccessContract $contract
+     * @param \App\Services\Attendance\Contracts\AttendanceFailContract    $errorContract
+     * @param array                                                        $credential
      * @return void
      * @author  WilsonParker
      * @added   2021/08/15
@@ -55,7 +52,6 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
             $this->logIn();
             return $contract->success($this, $this->attend());
         } catch (\Throwable $throwable) {
-            dd($throwable->getMessage());
             return $errorContract->fail($this, $throwable);
         }
     }
@@ -75,18 +71,10 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
             'POST',
             $this->getLogInUri(),
             [
-                'headers'     => [
-                    'User-Agent'   => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-                    'Accept'       => 'application/json, text/javascript, */*; q=0.01',
-                    'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8',
-                    'Origin'       => 'https://www.yesfile.com',
-                ],
                 'form_params' => $this->getLogInParams(),
                 'cookies'     => $this->cookieJar,
-                'debug'       => true,
             ],
         );
-        dd($response->getBody()->getContents());
         $this->beforeSetSession($response);
         $this->setSession($response);
         $this->onLogInAfter($response);
