@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services\Attendance;
+namespace App\Services\Attendance\Factories;
 
 use App\Services\Attendance\Contracts\AttendanceContract;
+use App\Services\Attendance\SiteType;
 
 class AttendanceFactory
 {

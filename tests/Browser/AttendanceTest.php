@@ -2,6 +2,7 @@
 
 namespace Tests\Browser;
 
+use App\Services\Attendance\DuskAttendanceService;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
@@ -12,17 +13,12 @@ class AttendanceTest extends DuskTestCase
      */
     public function testExample(): void
     {
-
-        $this->browse(function (Browser $browser) {
-            $browser->visit('https://m.yesfile.com/login')
-                    ->script([
-                        "$('#login_userid').val('?');",
-                        "$('#login_userpw').val('?');",
-                    ]);
-
-            $browser
-                ->click('#member_login')
-                ->waitForReload();
+        /**
+         * @var DuskAttendanceService $service
+         */
+        $service = app()->make(DuskAttendanceService::class);
+        $this->browse(function (Browser $browser) use ($service) {
+            $service->execute($browser);
         });
     }
 }

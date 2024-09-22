@@ -7,11 +7,20 @@ use App\Services\Attendance\Basic\AttendFailCallback;
 use App\Services\Attendance\Basic\AttendSuccessCallback;
 use App\Services\Attendance\Contracts\AttendanceFailContract;
 use App\Services\Attendance\Contracts\AttendanceSuccessContract;
+use App\Services\Attendance\Contracts\Dusk\AttendanceFactoryContract;
+use App\Services\Attendance\Factories\AttendanceFactory;
+use App\Services\Attendance\Factories\DuskAttendanceFactory;
 
 class AttendanceProvider extends AppServiceProvider
 {
 
     public function register()
+    {
+        $this->registerAttendance();
+        $this->registerDuskAttendance();
+    }
+
+    private function registerAttendance(): void
     {
         app()->singleton(Platforms\YesFile\AttendService::class, fn() => new Platforms\YesFile\AttendService());
         app()->singleton(Platforms\AppleFile\AttendService::class, fn() => new Platforms\AppleFile\AttendService());
@@ -28,7 +37,20 @@ class AttendanceProvider extends AppServiceProvider
             $app->make(AttendanceSuccessContract::class),
             $app->make(AttendanceFailContract::class),
         ));
-
-        app()->singleton(Platforms\YesFile\DuskAttendService::class, fn($app) => new Platforms\YesFile\DuskAttendService());
     }
+
+    private function registerDuskAttendance(): void
+    {
+        app()->singleton(Platforms\YesFile\DuskAttendService::class, fn($app) => new Platforms\YesFile\DuskAttendService());
+
+        app()->singleton(AttendanceFactoryContract::class, fn($app) => new DuskAttendanceFactory([
+            SiteType::YesFile->value => app()->make(Platforms\YesFile\DuskAttendService::class),
+        ]));
+
+
+        app()->singleton(DuskAttendanceService::class, fn($app) => new DuskAttendanceService(
+            $app->make(Platforms\YesFile\DuskAttendService::class::class),
+        ));
+    }
+
 }

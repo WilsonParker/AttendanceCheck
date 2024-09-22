@@ -7,6 +7,7 @@ use App\Models\Site\SiteAccount;
 use App\Services\Attendance\Contracts\AttendanceFailContract;
 use App\Services\Attendance\Contracts\AttendanceSuccessContract;
 use App\Services\Attendance\Contracts\SiteAccountContract;
+use App\Services\Attendance\Factories\AttendanceFactory;
 use App\Services\Attendance\Mail\AttendanceResultMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
