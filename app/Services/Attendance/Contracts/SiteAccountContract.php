@@ -6,7 +6,7 @@ interface SiteAccountContract
 {
     public function getTypeKey(): string;
 
-    public function getAccount(): string;
+    public function getAccountId(): string;
 
     public function getPassword(): string;
 

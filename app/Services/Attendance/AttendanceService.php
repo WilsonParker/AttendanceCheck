@@ -6,6 +6,7 @@ use App\Mail\OnAttended;
 use App\Models\Site\SiteAccount;
 use App\Services\Attendance\Contracts\AttendanceFailContract;
 use App\Services\Attendance\Contracts\AttendanceSuccessContract;
+use App\Services\Attendance\Contracts\SiteAccountContract;
 use App\Services\Attendance\Mail\AttendanceResultMail;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
@@ -24,17 +25,17 @@ class AttendanceService
     {
         $mail = [];
         SiteAccount::all()
-                   ->each(function (SiteAccount $siteAccount) use (&$mail) {
-                       $id = Crypt::decryptString($siteAccount->account_id);
+                   ->each(function (SiteAccountContract $siteAccount) use (&$mail) {
+                       $id = Crypt::decryptString($siteAccount->getAccountId());
                        try {
-                           $type = SiteType::from($siteAccount->getTypeKey());
+                           $type = SiteType::tryFrom($siteAccount->getTypeKey());
                            $mail[] = $this->factory->build($type)
                                                    ->event($this->successContract, $this->failContract, [
                                                        'id' => $id,
-                                                       'pw' => Crypt::decryptString($siteAccount->account_password),
+                                                       'pw' => Crypt::decryptString($siteAccount->getPassword()),
                                                    ]);
                        } catch (\Throwable $throwable) {
-                           $mail[] = new AttendanceResultMail($type->value, $id, $throwable->getMessage());
+                           $mail[] = new AttendanceResultMail($siteAccount->getTypeKey(), $id, $throwable->getMessage());
                            Log::error($throwable->getMessage());
                        }
                    });

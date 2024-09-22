@@ -20,7 +20,7 @@ class SiteAccount extends Model implements SiteAccountContract
         return $this->type->getKey();
     }
 
-    public function getAccount(): string
+    public function getAccountId(): string
     {
         return $this->account_id;
     }

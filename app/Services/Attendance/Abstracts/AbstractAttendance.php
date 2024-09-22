@@ -52,11 +52,10 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
             $this->logIn();
             return $contract->success($this, $this->attend());
         } catch (\Throwable $throwable) {
+            dd($throwable->getMessage());
             return $errorContract->fail($this, $throwable);
         }
     }
-
-    public function onLogInBefore() {}
 
     /**
      * @return \Psr\Http\Message\ResponseInterface
@@ -70,23 +69,24 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
         $this->onLogInBefore();
 
         $response = $this->call->post($this->url . $this->getLogInUri(), [
+            'header'      => [
+
+            ],
             'form_params' => $this->getLogInParams(),
-            'cookies' => $this->cookieJar,
+            'cookies'     => $this->cookieJar,
         ]);
+        dd($response->getBody());
         $this->beforeSetSession($response);
         $this->setSession($response);
         $this->onLogInAfter($response);
         return $response;
     }
 
+    public function onLogInBefore() {}
+
     public function beforeSetSession(ResponseInterface &$response) {}
 
     public function onLogInAfter(ResponseInterface $response) {}
-
-    public function getAttendanceParams(): array
-    {
-        return [];
-    }
 
     /**
      * @return \Psr\Http\Message\ResponseInterface
@@ -98,25 +98,40 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     public function attend(): ResponseInterface
     {
         $response = $this->call->post($this->url . $this->getAttendanceUri(), [
-            'headers' => [
+            'headers'     => [
                 'Cookie' => $this->getCookieSession(),
             ],
-            'cookies' => $this->cookieJar,
+            'cookies'     => $this->cookieJar,
             'form_params' => $this->getAttendanceParams(),
         ]);
         $this->onAttendAfter($response);
         return $response;
     }
 
-    public function onAttendAfter(ResponseInterface $response) {}
-
-    public function logOut()
+    protected function getCookieSession(): string
     {
-        // TODO: Implement logOut() method.
-        $this->onLogOutAfter();
+        return 'PHPSESSID=' . $this->getSession();
     }
 
-    public function onLogOutAfter() {}
+    protected function getSession(): string
+    {
+        return $this->session;
+    }
+
+    protected function setSession($response)
+    {
+        $cookie = $response->getHeader('Set-Cookie');
+        $cookieBite = explode(';', $cookie[0])[0];
+        $cookieId = explode('=', $cookieBite)[1];
+        $this->session = $cookieId;
+    }
+
+    public function getAttendanceParams(): array
+    {
+        return [];
+    }
+
+    public function onAttendAfter(ResponseInterface $response) {}
 
     public function getResultMessage(ResponseInterface $response): string
     {
@@ -128,23 +143,13 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
         return $this->credential['id'];
     }
 
-    protected function setSession($response)
+    public function logOut()
     {
-        $cookie = $response->getHeader('Set-Cookie');
-        $cookieBite = explode(';', $cookie[0])[0];
-        $cookieId = explode('=', $cookieBite)[1];
-        $this->session = $cookieId;
+        // TODO: Implement logOut() method.
+        $this->onLogOutAfter();
     }
 
-    protected function getSession(): string
-    {
-        return $this->session;
-    }
-
-    protected function getCookieSession(): string
-    {
-        return 'PHPSESSID=' . $this->getSession();
-    }
+    public function onLogOutAfter() {}
 
     protected function runCallback($callback, $data)
     {

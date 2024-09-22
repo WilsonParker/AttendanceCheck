@@ -22,11 +22,11 @@ class AttendService extends AbstractAttendance
         return [
             self::USER_ID => $this->credential['id'],
             self::USER_PW => $this->credential['pw'],
-            'pg_mode' => 'login',
-//            'new_home' => 'yes',
-//            'go_url' => '/',
-            'login_key' => $this->loginKey,
-            'type' => 'login',
+            //            'pg_mode' => 'login',
+            //            'new_home' => 'yes',
+            //            'go_url' => '/',
+            //            'login_key'   => $this->loginKey,
+            'type'        => 'login',
         ];
     }
 
@@ -50,14 +50,14 @@ class AttendService extends AbstractAttendance
     {
         return [
             'type' => 'attend',
-            'id' => 'attendroulette',
+            'id'   => 'attendroulette',
         ];
     }
 
     public function onLogInAfter(ResponseInterface $response)
     {
         $response = $this->call->get($this->url . '/event/#tab=view&id=attendroulette', [
-            'cookies' => $this->cookieJar
+            'cookies' => $this->cookieJar,
         ]);
     }
 
@@ -66,9 +66,7 @@ class AttendService extends AbstractAttendance
         return '/module/event/index.php';
     }
 
-    public function onAttendAfter(ResponseInterface $response)
-    {
-    }
+    public function onAttendAfter(ResponseInterface $response) {}
 
     public function getLogOutUri(): string
     {
