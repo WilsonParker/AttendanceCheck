@@ -28,7 +28,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         // $schedule->command(EnsureQueueListenerIsRunning::class)->hourly()->sendOutputTo('schedule_daily.txt', true);
 
-        $schedule->command(AttendanceCommand::class)->dailyAt(1)->sendOutputTo('schedule_daily.txt', true);
+        $schedule->command(AttendanceCommand::class)->twiceDaily()->sendOutputTo('schedule_daily.txt', true);
+        $schedule->command(AttendanceCommand::class);
     }
 
     /**

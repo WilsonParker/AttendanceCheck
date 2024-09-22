@@ -53,7 +53,6 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
             $this->logIn();
             return $contract->success($this, $this->attend());
         } catch (Throwable $throwable) {
-            dd($throwable);
             return $errorContract->fail($this, $throwable);
         }
     }
@@ -74,7 +73,7 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
             $this->getLogInUri(),
             [
                 'headers'     => [
-                    'referer' => 'https://www.yesfile.com/',
+                    'referer' => $this->url,
                 ],
                 'form_params' => $this->getLogInParams(),
                 'cookies'     => $this->cookieJar,
