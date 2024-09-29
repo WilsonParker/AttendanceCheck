@@ -41,7 +41,7 @@ class AttendService extends AbstractAttendance
 
     public function getAttendanceUri(): string
     {
-        return '/module/attend_re.php';
+        return '/module/attend.php';
     }
 
     public function getLogOutUri(): string
@@ -51,7 +51,7 @@ class AttendService extends AbstractAttendance
 
     public function getResultMessage(ResponseInterface $response): string
     {
-        return '';
+        return mb_convert_encoding($response->getBody()->getContents(), 'UTF-8', 'EUC-KR');
     }
 
     public function getPlatform(): SiteType
@@ -63,4 +63,5 @@ class AttendService extends AbstractAttendance
     {
         return '/module/tab_json.php';
     }
+
 }

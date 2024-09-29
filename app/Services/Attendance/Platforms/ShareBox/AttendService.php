@@ -55,7 +55,7 @@ class AttendService extends AbstractAttendance
 
     public function getResultMessage(ResponseInterface $response): string
     {
-        return '';
+        return $response->getBody()->getContents();
     }
 
     public function getPlatform(): SiteType
