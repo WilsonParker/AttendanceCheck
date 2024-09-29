@@ -2,6 +2,7 @@
 
 namespace App\Services\Attendance\Contracts;
 
+use App\Services\Attendance\SiteType;
 use Psr\Http\Message\ResponseInterface;
 
 interface AttendanceContract
@@ -17,7 +18,7 @@ interface AttendanceContract
 
     public function getResultMessage(ResponseInterface $response): string;
 
-    public function getPlatform(): string;
+    public function getPlatform(): SiteType;
 
     public function event(AttendanceSuccessContract $contract, AttendanceFailContract $errorContract, array $credential);
 

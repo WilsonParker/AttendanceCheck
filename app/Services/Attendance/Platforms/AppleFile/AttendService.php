@@ -7,6 +7,7 @@ use App\Services\Attendance\Contracts\AttendanceFailContract;
 use App\Services\Attendance\Contracts\AttendanceSuccessContract;
 use App\Services\Attendance\SiteType;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 class AttendService extends AbstractAttendance
 {
@@ -17,13 +18,9 @@ class AttendService extends AbstractAttendance
         return [
             self::USER_ID => $this->credential['id'],
             self::USER_PW => $this->credential['pw'],
-            'type' => 'login',
-            'save_id' => false,
+            'type'        => 'login',
+            'save_id'     => false,
         ];
-    }
-
-    public function onLogInAfter(ResponseInterface $response)
-    {
     }
 
     public function event(AttendanceSuccessContract $contract, AttendanceFailContract $errorContract, array $credential)
@@ -31,16 +28,13 @@ class AttendService extends AbstractAttendance
         try {
             $this->credential = $credential;
             return $contract->success($this, $this->logIn());
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return $errorContract->fail($this, $throwable);
         }
     }
 
 
-    public function onAttendAfter(ResponseInterface $response)
-    {
-
-    }
+    public function onAttendAfter(ResponseInterface $response) {}
 
     public function getLogInUri(): string
     {
@@ -54,7 +48,6 @@ class AttendService extends AbstractAttendance
 
     public function getLogOutUri(): string
     {
-        // TODO: Implement getLogOutUri() method.
         return '';
     }
 
@@ -63,8 +56,16 @@ class AttendService extends AbstractAttendance
         return json_decode($response->getBody()->getContents(), JSON_UNESCAPED_UNICODE)['alert'];
     }
 
-    public function getPlatform(): string
+    public function getPlatform(): SiteType
     {
-        return SiteType::AppleFile->value;
+        return SiteType::AppleFile;
+    }
+
+    public function onLogInAfter(ResponseInterface $response) {}
+
+
+    public function getLogInSessionUri()
+    {
+        return '';
     }
 }

@@ -89,7 +89,12 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
 
     public function beforeSetSession(ResponseInterface &$response) {}
 
-    public function onLogInAfter(ResponseInterface $response) {}
+    public function onLogInAfter(ResponseInterface $response)
+    {
+        $this->call->get($this->url . $this->getLogInSessionUri(), [
+            'cookies' => $this->cookieJar,
+        ]);
+    }
 
     /**
      * @return \Psr\Http\Message\ResponseInterface

@@ -12,6 +12,6 @@ class AttendFailCallback implements AttendanceFailContract
 
     public function fail(AttendanceContract $contract, Throwable $throwable)
     {
-        return new AttendanceResultMail($contract->getPlatform(), $contract->getAccountId(), $throwable->getMessage());
+        return new AttendanceResultMail($contract->getPlatform()->value, $contract->getAccountId(), $throwable->getMessage());
     }
 }

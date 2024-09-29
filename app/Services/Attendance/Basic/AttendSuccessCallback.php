@@ -12,6 +12,6 @@ class AttendSuccessCallback implements AttendanceSuccessContract
 
     public function success(AttendanceContract $contract, ResponseInterface $response)
     {
-        return new AttendanceResultMail($contract->getPlatform(), $contract->getAccountId(), $contract->getResultMessage($response));
+        return new AttendanceResultMail($contract->getPlatform()->value, $contract->getAccountId(), $contract->getResultMessage($response));
     }
 }

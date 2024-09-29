@@ -54,13 +54,6 @@ class AttendService extends AbstractAttendance
         ];
     }
 
-    public function onLogInAfter(ResponseInterface $response)
-    {
-        $response = $this->call->get($this->url . '/event/#tab=view&id=attendroulette', [
-            'cookies' => $this->cookieJar,
-        ]);
-    }
-
     public function getAttendanceUri(): string
     {
         return '/module/event/index.php';
@@ -78,8 +71,13 @@ class AttendService extends AbstractAttendance
         return json_decode($response->getBody()->getContents(), JSON_UNESCAPED_UNICODE)['msg'];
     }
 
-    public function getPlatform(): string
+    public function getPlatform(): SiteType
     {
-        return SiteType::YesFile->value;
+        return SiteType::YesFile;
+    }
+
+    public function getLogInSessionUri()
+    {
+        return '/event/#tab=view&id=attendroulette';
     }
 }

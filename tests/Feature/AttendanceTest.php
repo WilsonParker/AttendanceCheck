@@ -4,27 +4,53 @@ namespace Tests\Feature;
 
 use App\Services\Attendance\Contracts\AttendanceFailContract;
 use App\Services\Attendance\Contracts\AttendanceSuccessContract;
-use App\Services\Attendance\Platforms\YesFile\AttendService;
+use App\Services\Attendance\Platforms\ShareBox\AttendService as ShareBoxAttendService;
+use App\Services\Attendance\Platforms\YesFile\AttendService as YesFileAttendService;
 use Tests\TestCase;
 
 class AttendanceTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
     public function test_yesfile_login()
     {
         /**
-         * @var AttendService $service
+         * @var \App\Services\Attendance\Platforms\YesFile\AttendService $service
          */
-        $service = app()->make(AttendService::class);
+        $service = app()->make(YesFileAttendService::class);
         $successContract = app()->make(AttendanceSuccessContract::class);
         $failContract = app()->make(AttendanceFailContract::class);
         $service->event($successContract, $failContract, [
-            'id' => 'ze',
-            'pw' => '123',
+            'id' => '',
+            'pw' => '',
         ]);
+    }
+
+    public function test_sharebox_login()
+    {
+        /**
+         * @var \App\Services\Attendance\Platforms\ShareBox\AttendService $service
+         */
+        $service = app()->make(ShareBoxAttendService::class);
+        $successContract = app()->make(AttendanceSuccessContract::class);
+        $failContract = app()->make(AttendanceFailContract::class);
+        $result = $service->event($successContract, $failContract, [
+            'id' => '',
+            'pw' => '',
+        ]);
+        dump($result);
+    }
+
+    public function test_filecity_login()
+    {
+        /**
+         * @var \App\Services\Attendance\Platforms\ShareBox\AttendService $service
+         */
+        $service = app()->make(ShareBoxAttendService::class);
+        $successContract = app()->make(AttendanceSuccessContract::class);
+        $failContract = app()->make(AttendanceFailContract::class);
+        $result = $service->event($successContract, $failContract, [
+            'id' => 'lirv32',
+            'pw' => 'p2pfksek123',
+        ]);
+        dump($result);
     }
 }
