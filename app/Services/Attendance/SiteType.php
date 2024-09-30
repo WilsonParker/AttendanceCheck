@@ -8,5 +8,6 @@ enum SiteType: string
     case AppleFile = 'applefile';
     case ShareBox  = 'sharebox';
     case FileCity  = 'filecity';
+    case PdPop     = 'pdpop';
 }
 

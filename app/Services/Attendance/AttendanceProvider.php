@@ -23,6 +23,7 @@ class AttendanceProvider extends AppServiceProvider
         app()->singleton(Platforms\AppleFile\AttendService::class, fn() => new Platforms\AppleFile\AttendService());
         app()->singleton(Platforms\ShareBox\AttendService::class, fn() => new Platforms\ShareBox\AttendService());
         app()->singleton(Platforms\FileCity\AttendService::class, fn() => new Platforms\FileCity\AttendService());
+        app()->singleton(Platforms\PdPop\AttendService::class, fn() => new Platforms\PdPop\AttendService());
 
         app()->bind(AttendanceSuccessContract::class, fn() => new AttendSuccessCallback());
         app()->bind(AttendanceFailContract::class, fn() => new AttendFailCallback());
@@ -31,6 +32,7 @@ class AttendanceProvider extends AppServiceProvider
             SiteType::AppleFile->value => app()->make(Platforms\AppleFile\AttendService::class),
             SiteType::ShareBox->value  => app()->make(Platforms\ShareBox\AttendService::class),
             SiteType::FileCity->value  => app()->make(Platforms\FileCity\AttendService::class),
+            SiteType::PdPop->value     => app()->make(Platforms\PdPop\AttendService::class),
         ]));
 
         app()->singleton(AttendanceService::class, fn($app) => new AttendanceService(
