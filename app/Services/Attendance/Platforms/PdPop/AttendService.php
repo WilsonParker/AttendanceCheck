@@ -80,7 +80,7 @@ class AttendService extends AbstractAttendance
 
     public function getPlatform(): SiteType
     {
-        return SiteType::FileCity;
+        return SiteType::PdPop;
     }
 
     public function getLogInSessionUri()
