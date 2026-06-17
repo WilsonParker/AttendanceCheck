@@ -45,7 +45,7 @@ class AccountSeeder extends Seeder
 
         SiteAccount::create([
             'site_type_code' => SiteType::ShareBox->value,
-            'account_id' => 'eyJpdiI6Imt5YlRuOTdscVlZVXROY0pVcXpCOEE9PSIsInZhbHVlIjoiUVMxb20vQ0ZrdGVEUkIrblFNMStwUT09IiwibWFjIjoiOTk3Yjk5ZTAxMDUyNzg5YzU0OTM5MjQ4ZTI0N2U0MTYwZDAwMGU2ZjI5YTJjZWZiODcyZmRlMzczMzI0YTY1OSIsInRhZyI6IiJ9',
+            'account_id' => 'eyJpdiI6Ii9SWjBWdTJLZGR0RkcyTkpSZU1kUGc9PSIsInZhbHVlIjoiSDlWbEpUWDg1WXlFUzRRY096VjZWZz09IiwibWFjIjoiZjQ5NGUxNWRlN2NhZDQwNDk1ZmZkOGFkMmViNmNiZDAyOWU2MTczYWIwM2Y4YmE3YTExY2QzMzRiNzBjNzJlNCIsInRhZyI6IiJ9',
             'account_password' => 'eyJpdiI6InZLSFhqVUgyandXWWd4cmlUTmtXK3c9PSIsInZhbHVlIjoiMDMyNHhyeDNleFpIcW1OS0NiQ2syZz09IiwibWFjIjoiYjcyYWI3MzE2OTc4MGE2MThlMDRlOGFhZTBmZGY0OWQ5ZWJlOTVhNmY5ZWExYTI3NjIxNWNmNDJlNDNmMWIwMCIsInRhZyI6IiJ9',
         ]);
     }
