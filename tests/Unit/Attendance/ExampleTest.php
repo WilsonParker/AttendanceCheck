@@ -14,9 +14,10 @@ class ExampleTest extends TestCase
     {
         $this->createApplication();
 
-        $service = new AttendanceService();
+        $service = app(AttendanceService::class);
         $service->execute();
 
         $this->assertIsBool(true);
     }
+
 }

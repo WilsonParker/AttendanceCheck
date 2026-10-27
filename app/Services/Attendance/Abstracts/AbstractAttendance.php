@@ -32,15 +32,15 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     {
         $this->cookieJar = new CookieJar();
         $this->call = new Client([
-            'cookies'  => true,
+            'cookies' => true,
             'base_uri' => $this->url,
         ]);
     }
 
     /**
      * @param \App\Services\Attendance\Contracts\AttendanceSuccessContract $contract
-     * @param \App\Services\Attendance\Contracts\AttendanceFailContract    $errorContract
-     * @param array                                                        $credential
+     * @param \App\Services\Attendance\Contracts\AttendanceFailContract $errorContract
+     * @param array $credential
      * @return void
      * @author  WilsonParker
      * @added   2021/08/15
@@ -68,17 +68,7 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     {
         $this->onLogInBefore();
 
-        $response = $this->call->request(
-            'POST',
-            $this->getLogInUri(),
-            [
-                'headers'     => [
-                    'referer' => $this->url,
-                ],
-                'form_params' => $this->getLogInParams(),
-                'cookies'     => $this->cookieJar,
-            ],
-        );
+        $response = $this->callLogin();
         $this->beforeSetSession($response);
         $this->setSession($response);
         $this->onLogInAfter($response);
@@ -86,6 +76,21 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     }
 
     public function onLogInBefore() {}
+
+    public function callLogin(): ResponseInterface
+    {
+        return $this->call->request(
+            'POST',
+            $this->getLogInUri(),
+            [
+                'headers' => [
+                    'referer' => $this->url,
+                ],
+                'form_params' => $this->getLogInParams(),
+                'cookies' => $this->cookieJar,
+            ],
+        );
+    }
 
     public function beforeSetSession(ResponseInterface &$response) {}
 
@@ -106,10 +111,10 @@ abstract class AbstractAttendance implements LogInContract, LogOutContract, Atte
     public function attend(): ResponseInterface
     {
         $response = $this->call->post($this->url . $this->getAttendanceUri(), [
-            'headers'     => [
+            'headers' => [
                 'Cookie' => $this->getCookieSession(),
             ],
-            'cookies'     => $this->cookieJar,
+            'cookies' => $this->cookieJar,
             'form_params' => $this->getAttendanceParams(),
         ]);
         $this->onAttendAfter($response);
